@@ -1,0 +1,26 @@
+name = "hackabot"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+
+[triggers]
+crons = ["*/15 * * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "hackabot"
+database_id = "7f866425-2845-460d-b620-24b4650262cf"
+
+# Queue created with `npx wrangler queues create hackabot-messages`.
+[[queues.producers]]
+binding = "MESSAGES"
+queue = "hackabot-messages"
+
+[[queues.consumers]]
+queue = "hackabot-messages"
+# Free plan allows ~50 subrequests per invocation; each Telegram send is one.
+max_batch_size = 20
+max_batch_timeout = 2
+max_retries = 5
+
+# Secrets (set with `npx wrangler secret put <NAME>`):
+#   BOT_TOKEN, WEBHOOK_SECRET, ADMIN_CHAT_ID (optional)
